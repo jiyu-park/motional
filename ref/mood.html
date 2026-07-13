@@ -203,7 +203,13 @@
 <!-- Anger -->
 <div class="flex flex-col items-center gap-3 group animate-tickle">
 <div class="blob-shape w-20 h-20 bg-error-container flex items-center justify-center rounded-[20%_80%_80%_20%_/_10%_10%_90%_90%] shadow-sm group-active:scale-90">
-<span class="text-2xl font-bold text-on-error-container select-none">◡</span>
+<div aria-label="화난 표정" class="flex flex-col items-center gap-2" role="img">
+<div class="flex items-center gap-4">
+<span class="w-2.5 h-2.5 rounded-full bg-on-error-container"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-on-error-container"></span>
+</div>
+<span class="w-7 h-3 border-t-[3px] border-on-error-container rounded-[50%]"></span>
+</div>
 </div>
 <span class="font-label-bold text-on-surface-variant">Anger</span>
 </div>
@@ -261,11 +267,11 @@
 <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
 <span class="font-label-bold text-label-bold">Calendar</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="mood_playlist.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="mood_playlist.html" onclick="event.preventDefault(); alert('아직 개발이 완성되지 않았습니다.');">
 <span class="material-symbols-outlined" data-icon="music_note">music_note</span>
 <span class="font-label-bold text-label-bold">Music</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="dashboard.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="dashboard.html" onclick="event.preventDefault(); alert('아직 개발이 완성되지 않았습니다.');">
 <span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
 <span class="font-label-bold text-label-bold">Stats</span>
 </a>

@@ -133,15 +133,15 @@
                 </span>
 </div>
 <div class="flex gap-3 mt-6 w-full">
-<button class="flex-1 border-2 border-primary text-primary font-label-bold py-3 rounded-full squish-effect">기록 보기</button>
-<button class="flex-1 bg-primary text-on-primary font-label-bold py-3 rounded-full squish-effect">한 번 더 기록</button>
+<a class="flex-1 border-2 border-primary text-primary font-label-bold py-3 rounded-full squish-effect text-center" href="ref/mood_calendar.html">기록 보기</a>
+<a class="flex-1 bg-primary text-on-primary font-label-bold py-3 rounded-full squish-effect text-center" href="ref/mood.html">한 번 더 기록</a>
 </div>
 </section>
 <!-- Today's Music Recommendation -->
 <section class="bg-white rounded-lg border border-outline-variant overflow-hidden">
 <div class="p-6">
 <h3 class="font-headline-md text-on-surface-variant mb-4">평온한 오늘을 위한 음악</h3>
-<div class="relative group cursor-pointer overflow-hidden rounded-lg">
+<div class="relative group cursor-pointer overflow-hidden rounded-lg" onclick="alert('아직 개발이 완성되지 않았습니다.');" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); alert('아직 개발이 완성되지 않았습니다.'); }" role="button" tabindex="0">
 <div class="aspect-[16/9] w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCAPrQsKLx45-SI8l9VwrsriRnESnrvOoKbyHC6P2bqgnS9HJKyRxhVoyGV4eJ82X5sbXUwk2ih4T2LP613tulTaUP_iuF2dw1NxKUUyaLLciUm3pcNWQ8zFz_8Zgexfx53R3gDHSKgPXj4EZQ7t0hOkk3C4p4ZNa2KBqu5hOzrOBQTW0lA1wkXNGHzwEBTWp8dXGG54cpIGHD1Mjv-vy7irvJ-uzSM6AOtcojTYo7tsJDM3qDInVaKZkf54pV0nSry9g')">
 <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
 <span class="material-symbols-outlined text-white text-5xl">play_circle</span>
@@ -152,7 +152,7 @@
 <p class="text-white/80 text-sm">Gentle acoustic melodies for a soft start</p>
 </div>
 </div>
-<button class="w-full mt-4 flex items-center justify-center gap-2 text-primary font-label-bold py-2 rounded-full hover:bg-primary-container/30 transition-colors">
+<button class="w-full mt-4 flex items-center justify-center gap-2 text-primary font-label-bold py-2 rounded-full hover:bg-primary-container/30 transition-colors" onclick="alert('아직 개발이 완성되지 않았습니다.');">
                     추천 음악 보기 <span class="material-symbols-outlined">arrow_forward</span>
 </button>
 </div>
@@ -208,7 +208,7 @@
 <div class="bg-white px-3 py-1 rounded-full text-label-bold text-secondary">5일 기록</div>
 <div class="bg-white px-3 py-1 rounded-full text-label-bold text-secondary">가장 많은 활동: 독서</div>
 </div>
-<button class="mt-6 text-secondary font-label-bold flex items-center gap-1 group">
+<button class="mt-6 text-secondary font-label-bold flex items-center gap-1 group" onclick="alert('아직 개발이 완성되지 않았습니다.');">
                     통계 보기 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">insights</span>
 </button>
 </div>
@@ -266,19 +266,19 @@
 <span class="material-symbols-outlined">calendar_month</span>
 <span class="font-label-bold text-label-bold">Calendar</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/mood_playlist.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/mood_playlist.html" onclick="event.preventDefault(); alert('아직 개발이 완성되지 않았습니다.');">
 <span class="material-symbols-outlined">music_note</span>
 <span class="font-label-bold text-label-bold">Music</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/dashboard.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/dashboard.html" onclick="event.preventDefault(); alert('아직 개발이 완성되지 않았습니다.');">
 <span class="material-symbols-outlined">bar_chart</span>
 <span class="font-label-bold text-label-bold">Stats</span>
 </a>
 </nav>
 <!-- Floating Action Button (FAB) -->
-<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-transform">
+<a aria-label="감정 기록 추가" class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-transform" href="ref/mood.html">
 <span class="material-symbols-outlined text-3xl">add</span>
-</button>
+</a>
 <script>
         // Simple Micro-interaction for Blob Character
         const blob = document.querySelector('.character-blob');
