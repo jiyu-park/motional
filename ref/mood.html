@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mood Tracker - Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#fab3ca",
+                        "inverse-surface": "#31302d",
+                        "outline": "#837377",
+                        "surface-container-high": "#ebe8e3",
+                        "on-primary-container": "#7b4458",
+                        "on-primary": "#ffffff",
+                        "primary": "#864d61",
+                        "outline-variant": "#d5c2c6",
+                        "surface-bright": "#fcf9f4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#201c00",
+                        "on-surface-variant": "#514347",
+                        "surface-dim": "#dcdad5",
+                        "primary-container": "#ffb7ce",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1c1c19",
+                        "surface-container-highest": "#e5e2dd",
+                        "inverse-primary": "#fab3ca",
+                        "tertiary-fixed-dim": "#a2d3a4",
+                        "on-tertiary-container": "#335f39",
+                        "surface": "#fcf9f4",
+                        "on-tertiary-fixed-variant": "#24502c",
+                        "surface-container-low": "#f6f3ee",
+                        "secondary-fixed": "#f9e534",
+                        "surface-container": "#f0ede9",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4f4800",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#ffd9e3",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#706500",
+                        "on-primary-fixed": "#360b1e",
+                        "on-primary-fixed-variant": "#6a364a",
+                        "background": "#fcf9f4",
+                        "on-surface": "#1c1c19",
+                        "tertiary": "#3c6842",
+                        "tertiary-fixed": "#bdefbe",
+                        "secondary-fixed-dim": "#dbc90a",
+                        "secondary-container": "#f9e534",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f3f0eb",
+                        "tertiary-container": "#a6d7a8",
+                        "surface-variant": "#e5e2dd",
+                        "secondary": "#695f00",
+                        "surface-tint": "#864d61",
+                        "on-tertiary-fixed": "#002109"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "unit": "8px",
+                        "element-gap": "16px",
+                        "section-margin": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Quicksand"],
+                        "headline-md-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "500"}],
+                        "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        @keyframes tickle {
+            0% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(1.1) rotate(-3deg); }
+            40% { transform: scale(1.1) rotate(3deg); }
+            60% { transform: scale(1.1) rotate(-3deg); }
+            80% { transform: scale(1.1) rotate(3deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .animate-tickle:hover, .animate-tickle:active {
+            animation: tickle 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        .blob-shape {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            filter: drop-shadow(0 4px 0px rgba(0,0,0,0.05));
+        }
+        .blob-selected {
+            border: 3px solid #864d61;
+            padding: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d5c2c6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col items-center select-none overflow-x-hidden custom-scrollbar">
+<!-- Top App Bar -->
+<header class="docked full-width top-0 bg-background flex justify-between items-center px-container-padding py-unit w-full z-50 sticky top-0">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high p-2 rounded-full transition-transform active:scale-95" data-icon="close">close</button>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">October 2023</h1>
+<button class="text-primary font-label-bold hover:bg-surface-container-high px-4 py-2 rounded-full active:scale-95 transition-transform">Today</button>
+</header>
+<main class="flex-1 w-full max-w-2xl px-container-padding pb-32 pt-8">
+<!-- Headline Section -->
+<div class="text-center mb-10">
+<h2 class="font-headline-md text-headline-md mb-2">In this moment, how do you feel?</h2>
+<p class="font-body-md text-on-surface-variant">지금 기분이 어때요?</p>
+</div>
+<!-- Emotion Grid -->
+<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-y-10 gap-x-4 place-items-center">
+<!-- Happy -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed flex items-center justify-center rounded-[40%_60%_70%_30%_/_40%_50%_50%_60%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-fixed-variant select-none">&gt;ᴗ&lt;</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Happy</span>
+</div>
+<!-- Flutter -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-secondary-container flex items-center justify-center rounded-[60%_40%_30%_70%_/_50%_60%_40%_50%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-secondary-container select-none">&gt;_&lt;</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Flutter</span>
+</div>
+<!-- Pleasure -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed-dim flex items-center justify-center rounded-[50%_50%_50%_50%_/_60%_40%_60%_40%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-container select-none">^‿^</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Pleasure</span>
+</div>
+<!-- Peaceful -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-tertiary-container flex items-center justify-center rounded-[40%_60%_40%_60%_/_70%_30%_70%_30%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-tertiary-container select-none">˘ᵕ˘</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Peaceful</span>
+</div>
+<!-- Normal -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-surface-container-highest flex items-center justify-center rounded-[50%_50%_50%_50%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-surface-variant select-none">·_·</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Normal</span>
+</div>
+<!-- Tired -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-surface-dim flex items-center justify-center rounded-[70%_30%_50%_50%_/_40%_40%_60%_60%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-outline select-none">´-`</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Tired</span>
+</div>
+<!-- Sad -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed-dim opacity-80 flex items-center justify-center rounded-[30%_70%_70%_30%_/_50%_50%_50%_50%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-primary select-none">ꓶ-ꓶ</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Sad</span>
+</div>
+<!-- Anxiety -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed flex items-center justify-center rounded-full border-2 border-dotted border-on-primary-fixed-variant shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-fixed-variant select-none">°_°</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Anxiety</span>
+</div>
+<!-- Anger -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-error-container flex items-center justify-center rounded-[20%_80%_80%_20%_/_10%_10%_90%_90%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-error-container select-none">◡</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Anger</span>
+</div>
+<!-- Disappointed -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-secondary-fixed flex items-center justify-center rounded-[50%_50%_20%_80%_/_50%_50%_80%_20%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-secondary-container select-none">◞‸◟</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Gloom</span>
+</div>
+<!-- Stress -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed-dim flex items-center justify-center rounded-[40%_40%_60%_60%_/_60%_60%_40%_40%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-fixed-variant select-none">@_@</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Stress</span>
+</div>
+<!-- Sleepy -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-surface-variant flex items-center justify-center rounded-[80%_20%_80%_20%_/_20%_80%_20%_80%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-outline select-none">Θ_Θ</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Sleepy</span>
+</div>
+<!-- Surprised -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-fixed-dim flex items-center justify-center rounded-[50%_50%_50%_50%_/_20%_20%_80%_80%] shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-fixed-variant select-none">°o°</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Shock</span>
+</div>
+<!-- Numbness -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-surface-container flex items-center justify-center rounded-[30%_30%_30%_30%_/_30%_30%_30%_30%] border border-outline shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-outline select-none">-_-</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Numb</span>
+</div>
+<!-- Excited -->
+<div class="flex flex-col items-center gap-3 group animate-tickle">
+<div class="blob-shape w-20 h-20 bg-primary-container flex items-center justify-center rounded-full shadow-sm group-active:scale-90">
+<span class="text-2xl font-bold text-on-primary-container select-none">✧∀✧</span>
+</div>
+<span class="font-label-bold text-on-surface-variant">Excited</span>
+</div>
+</div>
+</main>
+<!-- Navigation Shell (Bottom Navigation) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container shadow-lg rounded-t-lg">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-bold text-label-bold">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-label-bold text-label-bold">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button (Save) -->
+<button class="fixed bottom-24 right-container-padding bg-primary text-on-primary px-8 py-4 rounded-full font-label-bold text-body-lg shadow-xl hover:bg-on-primary-fixed-variant active:scale-90 transition-all duration-300 flex items-center gap-2" id="save-btn">
+<span class="material-symbols-outlined" data-icon="check">check</span>
+        Save Mood
+    </button>
+<script>
+        document.querySelectorAll('.blob-shape').forEach(blob => {
+            blob.addEventListener('click', () => {
+                // Remove selected class from all
+                document.querySelectorAll('.blob-shape').forEach(b => b.classList.remove('blob-selected', 'scale-110'));
+                // Add to clicked
+                blob.classList.add('blob-selected', 'scale-110');
+                
+                // Optional Haptic feel
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(20);
+                }
+            });
+        });
+
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const selected = document.querySelector('.blob-selected');
+            if (selected) {
+                const moodName = selected.nextElementSibling?.textContent || 'your mood';
+                this.innerHTML = `<span class="material-symbols-outlined">favorite</span> Saved!`;
+                this.classList.replace('bg-primary', 'bg-tertiary');
+                setTimeout(() => {
+                    this.innerHTML = `<span class="material-symbols-outlined" data-icon="check">check</span> Save Mood`;
+                    this.classList.replace('bg-tertiary', 'bg-primary');
+                }, 2000);
+            } else {
+                alert('Please select a mood first! (◍•ᴗ•◍)');
+            }
+        });
+    </script>
+</body></html>

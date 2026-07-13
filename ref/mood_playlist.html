@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Mood Playlist</title>
+<!-- Typography and Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Quicksand:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#7b4458",
+            "secondary-fixed": "#f9e534",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed-variant": "#24502c",
+            "error": "#ba1a1a",
+            "secondary-container": "#f9e534",
+            "primary-fixed-dim": "#fab3ca",
+            "on-secondary-fixed-variant": "#4f4800",
+            "background": "#fcf9f4",
+            "on-surface-variant": "#514347",
+            "on-background": "#1c1c19",
+            "surface-container-high": "#ebe8e3",
+            "on-primary-fixed-variant": "#6a364a",
+            "tertiary-fixed-dim": "#a2d3a4",
+            "surface-dim": "#dcdad5",
+            "surface-container-low": "#f6f3ee",
+            "surface-container-highest": "#e5e2dd",
+            "primary-container": "#ffb7ce",
+            "inverse-surface": "#31302d",
+            "surface": "#fcf9f4",
+            "tertiary-fixed": "#bdefbe",
+            "secondary": "#695f00",
+            "outline-variant": "#d5c2c6",
+            "on-secondary-container": "#706500",
+            "primary-fixed": "#ffd9e3",
+            "on-tertiary-fixed": "#002109",
+            "surface-bright": "#fcf9f4",
+            "outline": "#837377",
+            "on-tertiary": "#ffffff",
+            "secondary-fixed-dim": "#dbc90a",
+            "on-secondary": "#ffffff",
+            "inverse-on-surface": "#f3f0eb",
+            "surface-container": "#f0ede9",
+            "tertiary": "#3c6842",
+            "inverse-primary": "#fab3ca",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#201c00",
+            "tertiary-container": "#a6d7a8",
+            "on-error-container": "#93000a",
+            "surface-tint": "#864d61",
+            "on-surface": "#1c1c19",
+            "on-primary-fixed": "#360b1e",
+            "primary": "#864d61",
+            "on-tertiary-container": "#335f39",
+            "surface-variant": "#e5e2dd"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "container-padding": "24px",
+            "section-margin": "40px",
+            "unit": "8px",
+            "element-gap": "16px"
+          },
+          "fontFamily": {
+            "headline-md-mobile": ["Plus Jakarta Sans"],
+            "body-md": ["Quicksand"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Quicksand"],
+            "label-bold": ["Quicksand"],
+            "headline-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "500"}],
+            "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #fcf9f4;
+      font-family: 'Quicksand', sans-serif;
+      overflow-x: hidden;
+      color: #1c1c19;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .blob-shape {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .active-interaction:active {
+      transform: scale(0.95);
+      transition: transform 0.2s;
+    }
+    .squishy-button:active {
+      transform: scale(0.92);
+      background-color: rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body class="bg-background min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="flex justify-between items-center px-container-padding py-unit w-full bg-background fixed top-0 left-0 z-40">
+<div class="flex items-center gap-2">
+<button class="p-2 text-primary active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-headline-md-mobile text-primary tracking-tight">AI Mood Playlist</h1>
+</div>
+<button class="font-label-bold text-label-bold text-primary active:scale-95 transition-transform duration-200">Today</button>
+</header>
+<main class="mt-20 px-container-padding space-y-element-gap">
+<!-- Today's Emotion Analysis Card -->
+<section class="relative bg-surface-container-low rounded-lg p-6 overflow-hidden border border-outline-variant/30 shadow-sm transition-all duration-300 hover:shadow-md">
+<div class="flex items-center gap-6 relative z-10">
+<div class="relative w-24 h-24 flex-shrink-0 animate-bounce transition-all duration-[2000ms] ease-in-out" style="animation-duration: 4s;">
+<img class="w-full h-full object-contain" data-alt="A soft, hand-drawn aesthetic character icon that looks like a friendly green flower with a peaceful expression. The character has simple black dot eyes and a gentle curved smile, rendered in a whimsical, pastel crayon-style texture on a soft cream background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxCxcu5vYFczO6hYXME5FCseVpNF896mRiFv19kjeP6hdf1psNJfOVZreutZNmX13wCIhgISkTMZ82XAz31oSN-GH_8N9v46lrMtUqoTThrrNIfjE-ru8ualBa4Tfg1I8izOBAxtI9H8vDXZMAq-vvYkYXyleJRhJjFaKG-Qg9nknYw-1jtNXJN8XCJ6aRrGTc0AMP8mDfjLT45WvLOmmIVZCRr00_oT_y54IDB8FJ4YmUQ66zXtD"/>
+</div>
+<div class="space-y-2">
+<div class="inline-block bg-tertiary-container text-on-tertiary-container px-4 py-1 rounded-full text-label-bold">
+            Calm &amp; Peaceful
+          </div>
+<div class="bg-surface border-2 border-primary-container rounded-2xl p-4 relative after:content-[''] after:absolute after:-left-2 after:top-4 after:w-4 after:h-4 after:bg-surface after:border-l-2 after:border-t-2 after:border-primary-container after:rotate-[-45deg]">
+<p class="font-body-md text-body-md text-on-surface italic">
+              "AI thinks you'd love these songs to match your peaceful vibes."
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Song of the Moment -->
+<section class="space-y-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Song of the Moment</h2>
+<div class="bg-white rounded-lg p-4 border border-outline-variant flex items-center gap-4 group">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A whimsical, pastel album art illustration featuring a soft-colored sunrise over a blooming meadow. The style is impressionistic with gentle, visible brushstrokes in shades of peach, lavender, and soft mint green, evoking a feeling of tranquility and morning freshness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq1c3P2RQyxQFiOsJVZJUi_ssKgpkIg_SV1n_rCuUzKnmYZjrsXbWmFBSYdlLMOHnqiORK4VszeMmLq0fTOkbkQH3EidTtItdKqMBfMDMUfIA9TwgRNS2Al3wWrWJuM0IWO4ImYaKz5nrWztMkGaZ-GfKFlkqS8FMkNlY0e9OLzzj1t2aoAO5C-XTlYloQJSi9vRLEc4_2JvNl551zYJ0RutcKcPS9S_xI0nxx6IeESrVg5OsIqkQW"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">play_arrow</span>
+</div>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface truncate">Morning Dew</h3>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">The Pastel Clouds</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">98% Mood Match</span>
+</div>
+</div>
+<button class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white squishy-button shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</section>
+<!-- Recommended for You (Horizontal Scroll) -->
+<section class="space-y-4">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Recommended for You</h2>
+<button class="text-primary font-label-bold text-label-bold">See All</button>
+</div>
+<div class="flex overflow-x-auto gap-4 hide-scrollbar pb-4 -mx-container-padding px-container-padding">
+<!-- Playlist 1 -->
+<div class="w-40 flex-shrink-0 space-y-2 group cursor-pointer active-interaction">
+<div class="w-40 h-40 rounded-lg overflow-hidden shadow-sm bg-surface-container-high relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A minimalist whimsical digital illustration of a small cloud floating above a single blooming pink tulip. The background is a soft beige tone, and the artwork uses organic, imperfect shapes with a gentle, non-judgmental aesthetic that feels like a quiet dream." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBaf0EZ9FmQXwvFb11VtcH572iuEAbs24U3a8mYF2ikiKolF78sWJhj2olXV8k3tPY7gIabEDUeYmA12lTjfpv_8rp2hwqSZgr1XumhQjynfApehzUDOe3hwfwrsqHvgNN7pwCDx27-1Qoy71TVcgKvbEzCS3ARJhCDbrQRA7j3TcquMKnAlYJEsW_miiD5YsmDt6EqonRQMODSLQSt_xJSPbYxdwfMOsr5avZccq8Tnv5YX7YkNql"/>
+<div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">music_note</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-tight px-1">Quiet Mornings</p>
+</div>
+<!-- Playlist 2 -->
+<div class="w-40 flex-shrink-0 space-y-2 group cursor-pointer active-interaction">
+<div class="w-40 h-40 rounded-lg overflow-hidden shadow-sm bg-surface-container-high relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Soft brutalism digital art piece showing three overlapping semi-transparent organic circles in pastel yellow, soft blue, and muted pink. The center of each circle features a tiny, hand-drawn smiley face, creating a playful and gentle visual for a chill music playlist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjah7nTAnHPrQlTn_O9DP26z7c7DznaxdCqQtJsec4LDIa-Mt4E_jHD3COGXfA8Hm2YZqfmD1jwGuifXUMaCFlqKurHL-oAziXkLb4aYpmKpIbxRrpmr4BgjUK45PVfkh0YLGI0gnZCIyiaUscYdeK4bz2ep97p-C64UV8UIEQ9s_U4zCAbIWZ1D87aitB2abAvAjmRAEJ-a_fm7Bku33_0xSSD_M1oex01qPdPAxKuo8_QdPWiDiS"/>
+<div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">music_note</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-tight px-1">Doodle &amp; Chill</p>
+</div>
+<!-- Playlist 3 -->
+<div class="w-40 flex-shrink-0 space-y-2 group cursor-pointer active-interaction">
+<div class="w-40 h-40 rounded-lg overflow-hidden shadow-sm bg-surface-container-high relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Whimsical digital sketchbook art depicting a tiny star-burst character sitting on a crescent moon. The lighting is soft and ambient with deep indigo and pastel purple tones, perfect for a soothing nighttime or relaxation theme. The character has a sleepy but happy expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQjUeTrqjegNE1KBNWGRWWOPl0Zxzm8Bd5ehxi40TM-5zjOhKDCWqywJKtiFz_6DuoN7OvMycLv6h10GpFUJApeusZ1SOyUykoxaokm2FT0S0LHF7iAy4jHRPFn0ZgogTWsj09he_2pm7tAY_gkli2rbvxVZesGqwpcmJhIA-bPh2ymE7s1r7O_QQr2aSxIhp_-lSXBLjwJBW-cldnfJU7GPMdOSMfBqo5Exo3_Wjl5BLq2WYz7gu6"/>
+<div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">music_note</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-tight px-1">Starry Night</p>
+</div>
+</div>
+</section>
+<!-- Activity-based Music Tags -->
+<section class="space-y-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Activities</h2>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-3 rounded-full shadow-sm hover:bg-surface-container-low transition-colors active-interaction">
+<span class="material-symbols-outlined text-tertiary">menu_book</span>
+<span class="font-body-md text-body-md">Reading</span>
+</button>
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-3 rounded-full shadow-sm hover:bg-surface-container-low transition-colors active-interaction">
+<span class="material-symbols-outlined text-secondary">self_improvement</span>
+<span class="font-body-md text-body-md">Relaxing</span>
+</button>
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-3 rounded-full shadow-sm hover:bg-surface-container-low transition-colors active-interaction">
+<span class="material-symbols-outlined text-primary">bedtime</span>
+<span class="font-body-md text-body-md">Sleepy</span>
+</button>
+<button class="flex items-center gap-2 bg-white border border-outline-variant px-4 py-3 rounded-full shadow-sm hover:bg-surface-container-low transition-colors active-interaction">
+<span class="material-symbols-outlined text-on-primary-fixed-variant">palette</span>
+<span class="font-body-md text-body-md">Creative</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container shadow-lg rounded-t-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-bold text-label-bold">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">music_note</span>
+<span class="font-label-bold text-label-bold">Music</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label-bold text-label-bold">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</nav>
+<script>
+    // Subtle float animation logic for the mood character
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('section > div');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'translateY(-4px)';
+          card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'translateY(0px)';
+        });
+      });
+    });
+  </script>
+</body></html>

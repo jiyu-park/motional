@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Quicksand:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#695f00",
+                    "on-surface": "#1c1c19",
+                    "outline-variant": "#d5c2c6",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#ebe8e3",
+                    "tertiary": "#3c6842",
+                    "on-secondary-fixed-variant": "#4f4800",
+                    "inverse-on-surface": "#f3f0eb",
+                    "tertiary-fixed": "#bdefbe",
+                    "surface-container": "#f0ede9",
+                    "primary-fixed-dim": "#fab3ca",
+                    "surface-dim": "#dcdad5",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#dbc90a",
+                    "secondary-fixed": "#f9e534",
+                    "on-surface-variant": "#514347",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#a6d7a8",
+                    "primary-fixed": "#ffd9e3",
+                    "surface-bright": "#fcf9f4",
+                    "secondary-container": "#f9e534",
+                    "primary-container": "#ffb7ce",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#201c00",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1c1c19",
+                    "on-primary-container": "#7b4458",
+                    "outline": "#837377",
+                    "surface": "#fcf9f4",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#706500",
+                    "on-primary-fixed": "#360b1e",
+                    "on-tertiary-fixed-variant": "#24502c",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#002109",
+                    "surface-container-highest": "#e5e2dd",
+                    "tertiary-fixed-dim": "#a2d3a4",
+                    "surface-tint": "#864d61",
+                    "on-tertiary-container": "#335f39",
+                    "on-primary-fixed-variant": "#6a364a",
+                    "surface-container-low": "#f6f3ee",
+                    "background": "#fcf9f4",
+                    "inverse-surface": "#31302d",
+                    "surface-variant": "#e5e2dd",
+                    "primary": "#864d61",
+                    "inverse-primary": "#fab3ca"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-padding": "24px",
+                    "section-margin": "40px",
+                    "element-gap": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-bold": ["Quicksand"],
+                    "body-md": ["Quicksand"],
+                    "body-lg": ["Quicksand"],
+                    "headline-md-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "500"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background flex justify-between items-center px-container-padding py-unit">
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-primary active:scale-95 transition-transform">menu</button>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">통계</h1>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full font-label-bold text-label-bold active:scale-95 transition-transform flex items-center gap-1 mr-2">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            PDF 내보내기
+        </button><button class="bg-primary-container text-on-primary-container px-4 py-1 rounded-full font-label-bold text-label-bold active:scale-95 transition-transform">
+            오늘
+        </button>
+</header>
+<main class="mt-20 px-container-padding space-y-element-gap">
+<!-- Summary Card: Most Frequent Mood -->
+<section class="bg-surface-container-low rounded-lg p-6 border border-[#E6E2D9] flex items-center justify-between overflow-hidden relative">
+<div class="z-10">
+<p class="text-on-surface-variant font-label-bold text-label-bold mb-1">이번 달 가장 자주 느낀 기분</p>
+<h2 class="font-headline-md text-headline-md text-primary">행복함 (Happy)</h2>
+<p class="text-on-surface-variant text-body-md font-body-md mt-1">총 12일 기록되었어요!</p>
+</div>
+<div class="relative z-10 w-24 h-24 bg-primary-container rounded-full flex items-center justify-center blob-shadow">
+<span class="material-symbols-outlined text-primary text-5xl" style="font-variation-settings: 'FILL' 1;">sentiment_very_satisfied</span>
+</div>
+<!-- Decorative Blobs -->
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-secondary-container opacity-20 rounded-full blur-xl"></div>
+</section>
+<!-- Mood Flow Line Chart -->
+<section class="bg-surface-container-lowest rounded-lg p-6 border border-[#E6E2D9]">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">기분 흐름 (최근 30일)</h3>
+<div class="h-48 w-full chart-container">
+<svg viewBox="0 0 400 100" class="w-full h-full">
+<path d="M0,80 Q50,20 100,50 T200,30 T300,70 T400,40" fill="none" stroke="#864d61" stroke-width="4" stroke-linecap="round" class="custom-path"></path>
+<circle cx="0" cy="80" r="4" fill="#864d61"></circle>
+<circle cx="100" cy="50" r="4" fill="#864d61"></circle>
+<circle cx="200" cy="30" r="4" fill="#864d61"></circle>
+<circle cx="300" cy="70" r="4" fill="#864d61"></circle>
+<circle cx="400" cy="40" r="4" fill="#864d61"></circle>
+</svg>
+<div class="flex justify-between mt-4 text-on-surface-variant font-label-bold text-[10px]">
+<span class="">1일</span>
+<span class="">10일</span>
+<span class="">20일</span>
+<span class="">30일</span>
+</div>
+</div>
+</section>
+<!-- Two Column Layout for Insights & Distribution -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<!-- Mood Distribution (Donut Chart) -->
+<section class="bg-surface-container-low rounded-lg p-6 border border-[#E6E2D9]">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">기분 분포</h3>
+<div class="flex items-center gap-6">
+<div class="relative w-28 h-28">
+<svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+<circle cx="18" cy="18" r="16" fill="none" stroke="#f9e534" stroke-width="4" stroke-dasharray="40 100"></circle>
+<circle cx="18" cy="18" r="16" fill="none" stroke="#ffb7ce" stroke-width="4" stroke-dasharray="30 100" stroke-dashoffset="-40"></circle>
+<circle cx="18" cy="18" r="16" fill="none" stroke="#a6d7a8" stroke-width="4" stroke-dasharray="20 100" stroke-dashoffset="-70"></circle>
+<circle cx="18" cy="18" r="16" fill="none" stroke="#d5c2c6" stroke-width="4" stroke-dasharray="10 100" stroke-dashoffset="-90"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-bold text-primary text-xs">Total 30</div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="text-body-md text-on-surface-variant font-body-md">행복 (40%)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="text-body-md text-on-surface-variant font-body-md">평온 (30%)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary-container"></span>
+<span class="text-body-md text-on-surface-variant font-body-md">활기 (20%)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-outline-variant"></span>
+<span class="text-body-md text-on-surface-variant font-body-md">우울 (10%)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Weekly Insight Card -->
+<section class="bg-tertiary-container text-on-tertiary-container rounded-lg p-6 border border-[#E6E2D9] flex flex-col justify-center">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-3xl">lightbulb</span>
+<div>
+<h3 class="font-headline-md text-headline-md mb-2">주간 인사이트</h3>
+<p class="text-body-lg font-body-lg leading-relaxed">
+                            "이번 달은 유독 <span class="font-bold underline decoration-wavy">화요일</span>에 에너지가 넘치셨네요! 화요일마다 즐거운 일이 있었나요?"
+                        </p>
+</div>
+</div>
+</section>
+</div>
+<!-- Details List / Activity Tags -->
+<section class="space-y-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">가장 많이 한 활동</h3>
+<div class="flex flex-wrap gap-2">
+<div class="bg-surface-variant px-4 py-2 rounded-full flex items-center gap-2 border border-[#E6E2D9] shadow-sm">
+<span class="material-symbols-outlined text-primary">exercise</span>
+<span class="text-body-md font-body-md">운동 (15회)</span>
+</div>
+<div class="bg-surface-variant px-4 py-2 rounded-full flex items-center gap-2 border border-[#E6E2D9] shadow-sm">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<span class="text-body-md font-body-md">독서 (8회)</span>
+</div>
+<div class="bg-surface-variant px-4 py-2 rounded-full flex items-center gap-2 border border-[#E6E2D9] shadow-sm">
+<span class="material-symbols-outlined text-primary">coffee</span>
+<span class="text-body-md font-body-md">카페 방문 (6회)</span>
+</div>
+<div class="bg-surface-variant px-4 py-2 rounded-full flex items-center gap-2 border border-[#E6E2D9] shadow-sm">
+<span class="material-symbols-outlined text-primary">work</span>
+<span class="text-body-md font-body-md">업무 (20회)</span>
+</div>
+</div>
+</section>
+<!-- Illustration Canvas -->
+<div class="w-full rounded-xl overflow-hidden h-40 relative mt-4">
+<img class="w-full h-full object-cover opacity-80 grayscale-[20%]" data-alt="A whimsical, minimalist illustration of cute pastel-colored character blobs playing in a soft green meadow. The style is kawaii with soft edges, hand-drawn textures, and gentle lighting. Warm sunlight filters through simplified tree shapes. The characters have simple dot eyes and smiling faces, creating an atmosphere of emotional gentleness and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOe8_GCFtW24oKlwLSUTVoWAdVvJN-Gd9hI4KYjTc5gMAsWievdfjwnFRziQX-9ILCE_JWhnSRw_IIss5FAMqZBP79xgiZYeFCD0ChwFOhgu3dwg6991q3iIs9CzPXjJyIyUjam_cOh6eM3CVKu--nvRuzYKsCBKfBR9bAksMRZDqc0etKGWvXCs6BOdbPJCWYSrTrB9TGQ6uUFv6d_VIoQrsA4jCaE2snu_r099XZ0gcp1x1dlRV0">
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container border-t border-outline-variant shadow-lg rounded-t-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-bold text-label-bold">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 hover:opacity-80 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+<span class="font-label-bold text-label-bold">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</nav>
+<script class="">
+        // Simple micro-interaction for cards
+        document.querySelectorAll('section').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s ease-out';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+
+</body></html>
