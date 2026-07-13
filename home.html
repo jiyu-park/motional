@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Quicksand:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&family=Quicksand:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#ebe8e3",
+                    "tertiary-fixed": "#bdefbe",
+                    "outline-variant": "#d5c2c6",
+                    "surface-container-highest": "#e5e2dd",
+                    "on-primary-fixed": "#360b1e",
+                    "on-secondary-container": "#706500",
+                    "primary": "#864d61",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#fcf9f4",
+                    "surface-container-low": "#f6f3ee",
+                    "primary-fixed-dim": "#fab3ca",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#7b4458",
+                    "secondary": "#695f00",
+                    "surface-tint": "#864d61",
+                    "on-surface": "#1c1c19",
+                    "tertiary-container": "#a6d7a8",
+                    "inverse-primary": "#fab3ca",
+                    "secondary-container": "#f9e534",
+                    "outline": "#837377",
+                    "secondary-fixed": "#f9e534",
+                    "surface": "#fcf9f4",
+                    "on-tertiary-container": "#335f39",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#dbc90a",
+                    "on-secondary-fixed-variant": "#4f4800",
+                    "tertiary-fixed-dim": "#a2d3a4",
+                    "background": "#fcf9f4",
+                    "inverse-on-surface": "#f3f0eb",
+                    "primary-container": "#ffb7ce",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#31302d",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffd9e3",
+                    "on-primary-fixed-variant": "#6a364a",
+                    "on-tertiary-fixed": "#002109",
+                    "on-surface-variant": "#514347",
+                    "tertiary": "#3c6842",
+                    "on-tertiary-fixed-variant": "#24502c",
+                    "surface-container": "#f0ede9",
+                    "surface-variant": "#e5e2dd",
+                    "on-secondary-fixed": "#201c00",
+                    "surface-dim": "#dcdad5",
+                    "on-background": "#1c1c19"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-margin": "40px",
+                    "element-gap": "16px",
+                    "container-padding": "24px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Quicksand"],
+                    "body-lg": ["Quicksand"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Quicksand"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-md-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #fcf9f4; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .character-blob {
+            mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M44.7,-76.4C58.1,-69.2,69.2,-57.4,77.3,-43.8C85.4,-30.3,90.5,-15.1,90.2,-0.2C89.9,14.7,84.1,29.4,75.3,42.2C66.5,55,54.7,65.9,41.1,73.1C27.5,80.3,12.1,83.8,-2.6,88.3C-17.3,92.8,-31.2,98.3,-44.6,94.1C-58,89.9,-70.9,76,-79.1,60.8C-87.3,45.6,-90.7,29.1,-91.7,12.8C-92.7,-3.5,-91.2,-19.6,-85.1,-34C-78.9,-48.5,-68.1,-61.4,-54.6,-68.6C-41.1,-75.8,-24.9,-77.3,-9.4,-78.9C6.1,-80.5,22.2,-82.2,37.3,-79.8C40,-79.4,42.4,-78,44.7,-76.4Z" transform="translate(100 100)" /></svg>');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+        .squish-effect:active { transform: scale(0.96); transition: transform 0.2s ease; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="bg-background sticky top-0 z-50 flex justify-between items-center px-container-padding py-unit w-full">
+<h1 class="font-display-lg text-headline-md text-primary tracking-tight">October 2023</h1>
+<div class="flex items-center gap-4">
+<button class="text-primary font-bold hover:bg-surface-container-high px-3 py-1 rounded-full transition-colors">Today</button>
+<button aria-label="Profile" class="p-2 text-primary hover:bg-surface-container-high rounded-full active:scale-95 transition-transform" title="Profile">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="px-container-padding space-y-element-gap mt-4">
+<!-- Today's Emotional Check-in (State B: After Logging) -->
+<section class="bg-white rounded-lg border border-outline-variant p-6 flex flex-col items-center text-center">
+<span class="text-on-surface-variant text-label-bold mb-2">오늘의 감정</span>
+<div class="w-32 h-32 bg-tertiary-fixed-dim character-blob flex items-center justify-center mb-4 relative animate-pulse">
+<span class="text-4xl">^‿^</span>
+</div>
+<h2 class="font-headline-md text-on-surface">평온 · 오후 2:30</h2>
+<div class="flex gap-2 mt-2">
+<span class="bg-surface-container-low px-3 py-1 rounded-full text-label-bold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">menu_book</span> 독서
+                </span>
+<span class="bg-surface-container-low px-3 py-1 rounded-full text-label-bold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">bed</span> 휴식
+                </span>
+</div>
+<div class="flex gap-3 mt-6 w-full">
+<button class="flex-1 border-2 border-primary text-primary font-label-bold py-3 rounded-full squish-effect">기록 보기</button>
+<button class="flex-1 bg-primary text-on-primary font-label-bold py-3 rounded-full squish-effect">한 번 더 기록</button>
+</div>
+</section>
+<!-- Today's Music Recommendation -->
+<section class="bg-white rounded-lg border border-outline-variant overflow-hidden">
+<div class="p-6">
+<h3 class="font-headline-md text-on-surface-variant mb-4">평온한 오늘을 위한 음악</h3>
+<div class="relative group cursor-pointer overflow-hidden rounded-lg">
+<div class="aspect-[16/9] w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCAPrQsKLx45-SI8l9VwrsriRnESnrvOoKbyHC6P2bqgnS9HJKyRxhVoyGV4eJ82X5sbXUwk2ih4T2LP613tulTaUP_iuF2dw1NxKUUyaLLciUm3pcNWQ8zFz_8Zgexfx53R3gDHSKgPXj4EZQ7t0hOkk3C4p4ZNa2KBqu5hOzrOBQTW0lA1wkXNGHzwEBTWp8dXGG54cpIGHD1Mjv-vy7irvJ-uzSM6AOtcojTYo7tsJDM3qDInVaKZkf54pV0nSry9g')">
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-5xl">play_circle</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+<p class="text-white font-bold text-lg">Quiet Mornings</p>
+<p class="text-white/80 text-sm">Gentle acoustic melodies for a soft start</p>
+</div>
+</div>
+<button class="w-full mt-4 flex items-center justify-center gap-2 text-primary font-label-bold py-2 rounded-full hover:bg-primary-container/30 transition-colors">
+                    추천 음악 보기 <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Recent Records -->
+<section class="bg-surface-container-low rounded-lg p-6">
+<h3 class="font-headline-md text-on-surface mb-4">최근 기록</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-outline-variant hover:border-primary cursor-pointer transition-all active:scale-95">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-tertiary-fixed-dim rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">sentiment_satisfied</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">오늘</p>
+<p class="text-sm text-on-surface-variant">평온</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-outline-variant hover:border-primary cursor-pointer transition-all active:scale-95">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">sentiment_neutral</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">어제</p>
+<p class="text-sm text-on-surface-variant">피곤</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded-xl border border-outline-variant hover:border-primary cursor-pointer transition-all active:scale-95">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">sentiment_very_satisfied</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">7월 11일</p>
+<p class="text-sm text-on-surface-variant">행복</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Weekly Summary & Habit Tracker -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<div class="bg-secondary-container/20 rounded-lg p-6 border border-secondary/10">
+<h3 class="font-headline-md text-on-secondary-fixed-variant mb-2">Weekly Insight</h3>
+<p class="text-body-md text-on-surface-variant">이번 주에는 <span class="font-bold text-primary">평온</span>을 가장 많이 기록했어요.</p>
+<div class="mt-4 flex items-center gap-4">
+<div class="bg-white px-3 py-1 rounded-full text-label-bold text-secondary">5일 기록</div>
+<div class="bg-white px-3 py-1 rounded-full text-label-bold text-secondary">가장 많은 활동: 독서</div>
+</div>
+<button class="mt-6 text-secondary font-label-bold flex items-center gap-1 group">
+                    통계 보기 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">insights</span>
+</button>
+</div>
+<div class="bg-white rounded-lg p-6 border border-outline-variant">
+<h3 class="font-headline-md text-on-surface-variant mb-4">Logging Habit</h3>
+<p class="text-body-md text-on-surface mb-4">이번 주 <span class="text-primary font-bold">4일</span> 기록했어요 ✨</p>
+<div class="flex justify-between items-center px-2">
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-[10px] font-bold text-outline">월</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-[10px] font-bold text-outline">화</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-[10px] font-bold text-outline">수</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant"></div>
+<span class="text-[10px] font-bold text-outline">목</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-[10px] font-bold text-outline">금</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant"></div>
+<span class="text-[10px] font-bold text-outline">토</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant"></div>
+<span class="text-[10px] font-bold text-outline">일</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container shadow-lg rounded-t-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 active:scale-90 transition-all duration-300 ease-out" href="home.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/mood_calendar.html">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-bold text-label-bold">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/mood_playlist.html">
+<span class="material-symbols-outlined">music_note</span>
+<span class="font-label-bold text-label-bold">Music</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="ref/dashboard.html">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label-bold text-label-bold">Stats</span>
+</a>
+</nav>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<script>
+        // Simple Micro-interaction for Blob Character
+        const blob = document.querySelector('.character-blob');
+        if (blob) {
+            blob.addEventListener('click', () => {
+                blob.style.transform = 'scale(1.1) rotate(5deg)';
+                setTimeout(() => {
+                    blob.style.transform = 'scale(1) rotate(0deg)';
+                }, 300);
+            });
+        }
+    </script>
+</body></html>

@@ -137,9 +137,14 @@
 </button>
 <h1 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">October 2023</h1>
 </div>
+<div class="flex items-center gap-1">
 <button class="text-primary dark:text-primary-fixed-dim font-bold active:scale-95 transition-transform duration-200 hover:bg-surface-container-high px-4 py-2 rounded-full">
             Today
         </button>
+<button aria-label="Profile" class="p-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-container-high rounded-full active:scale-95 transition-transform" title="Profile">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
 </header>
 <!-- Main Content Canvas -->
 <main class="flex-1 px-container-padding py-element-gap pb-32">
@@ -259,21 +264,26 @@
 </div>
 <!-- BottomNavBar -->
 <nav class="bg-surface-container dark:bg-inverse-surface docked full-width bottom-0 rounded-t-lg shadow-lg fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-4 pb-4 pt-2 border-t border-outline-variant">
+<!-- Home Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="../home.html">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold mt-1">Home</span>
+</a>
 <!-- Calendar Tab (Active) -->
-<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-xl px-4 py-2 active:scale-90 transition-all duration-300 ease-out">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-xl px-4 py-2 active:scale-90 transition-all duration-300 ease-out" href="mood_calendar.html">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
 <span class="font-label-bold text-label-bold mt-1">Calendar</span>
-</button>
+</a>
+<!-- Music Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="mood_playlist.html">
+<span class="material-symbols-outlined">music_note</span>
+<span class="font-label-bold text-label-bold mt-1">Music</span>
+</a>
 <!-- Stats Tab -->
-<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out" href="dashboard.html">
 <span class="material-symbols-outlined">bar_chart</span>
 <span class="font-label-bold text-label-bold mt-1">Stats</span>
-</button>
-<!-- Profile Tab -->
-<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:opacity-80 active:scale-90 transition-all duration-300 ease-out">
-<span class="material-symbols-outlined">person</span>
-<span class="font-label-bold text-label-bold mt-1">Profile</span>
-</button>
+</a>
 </nav>
 <script>
         // Micro-interaction for calendar cells
