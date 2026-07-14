@@ -1,6 +1,6 @@
 import { Link, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton, Card } from '@/components/ui';
@@ -24,14 +24,20 @@ const recordRanges = [
 type RecordRange = (typeof recordRanges)[number]['id'];
 
 export default function CalendarScreen() {
-  const { deleted, saved, selectedDate } = useLocalSearchParams<{
-    deleted?: string;
+  const { saved, selectedDate } = useLocalSearchParams<{
     saved?: string;
     selectedDate?: string;
   }>();
   const entries = useMoodStore((state) => state.entries);
   const isLoading = useMoodStore((state) => state.isLoading);
+  const deleteEntry = useMoodStore((state) => state.deleteEntry);
   const [recordRange, setRecordRange] = useState<RecordRange>('month');
+  const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
+  const [pendingDeleteEntry, setPendingDeleteEntry] = useState<{
+    date: string;
+    id: string;
+  } | null>(null);
+  const deletingEntryIdRef = useRef<string | null>(null);
   const today = new Date();
   const todayKey = toDateKey(today);
   const activeSelectedDate = selectedDate && isDateKey(selectedDate) ? selectedDate : undefined;
@@ -61,19 +67,60 @@ export default function CalendarScreen() {
     ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
   ];
 
+  const deleteMoodEntry = async (entryId: string) => {
+    if (deletingEntryIdRef.current) return;
+
+    deletingEntryIdRef.current = entryId;
+    setDeletingEntryId(entryId);
+    try {
+      const deletedEntry = await deleteEntry(entryId);
+      if (!deletedEntry) throw new Error('Mood entry not found.');
+    } catch {
+      Alert.alert('삭제하지 못했어요', '잠시 후 다시 시도해 주세요.');
+    } finally {
+      deletingEntryIdRef.current = null;
+      setDeletingEntryId(null);
+    }
+  };
+
+  const confirmDelete = (entryId: string, date: string) => {
+    setPendingDeleteEntry({ date, id: entryId });
+  };
+
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setPendingDeleteEntry(null)}
+        transparent
+        visible={pendingDeleteEntry !== null}>
+        <View style={styles.modalOverlay}>
+          <View accessibilityRole="alert" style={styles.confirmDialog}>
+            <Text style={styles.confirmTitle}>기록을 삭제할까요?</Text>
+            <Text style={styles.confirmDescription}>
+              {pendingDeleteEntry?.date} 감정 기록은 삭제 후 되돌릴 수 없어요.
+            </Text>
+            <View style={styles.confirmActions}>
+              <AppButton
+                label="취소"
+                onPress={() => setPendingDeleteEntry(null)}
+                style={styles.confirmButton}
+                variant="soft"
+              />
+              <AppButton
+                label="삭제"
+                onPress={() => {
+                  const entryId = pendingDeleteEntry?.id;
+                  setPendingDeleteEntry(null);
+                  if (entryId) void deleteMoodEntry(entryId);
+                }}
+                style={styles.confirmButton}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
       <ScrollView contentContainerStyle={styles.content}>
-        {deleted === '1' && (
-          <Card
-            accessibilityRole="alert"
-            padding="medium"
-            style={styles.successBanner}
-            variant="highlight">
-            <Text style={styles.successText}>감정 기록이 삭제되었어요.</Text>
-          </Card>
-        )}
-
         {saved === '1' && (
           <Card
             accessibilityRole="alert"
@@ -121,11 +168,11 @@ export default function CalendarScreen() {
                   asChild>
                   <Pressable
                     accessibilityLabel={`${dateKey} 감정 기록`}
-                    style={[
+                    style={StyleSheet.flatten([
                       styles.dayCell,
-                      isToday && styles.todayCell,
-                      isSelected && styles.selectedDayCell,
-                    ]}>
+                      isToday ? styles.todayCell : undefined,
+                      isSelected ? styles.selectedDayCell : undefined,
+                    ])}>
                     <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>{day}</Text>
                     {mood && <Text style={styles.dayMood}>{mood.emoji}</Text>}
                   </Pressable>
@@ -179,12 +226,13 @@ export default function CalendarScreen() {
                 .join(', ');
 
               return (
-                <Link
-                  key={entry.id}
-                  href={{ pathname: '/mood', params: { date: entry.date, entryId: entry.id } }}
-                  asChild>
-                  <Pressable accessibilityLabel={`${entry.date} 감정 기록 수정`}>
-                    <Card padding="medium" style={styles.recordCard}>
+                <Card key={entry.id} padding="medium" style={styles.recordCard}>
+                  <Link
+                    href={{ pathname: '/mood', params: { date: entry.date, entryId: entry.id } }}
+                    asChild>
+                    <Pressable
+                      accessibilityLabel={`${entry.date} 감정 기록 수정`}
+                      style={styles.recordMain}>
                       <View
                         style={[
                           styles.recordFace,
@@ -206,9 +254,34 @@ export default function CalendarScreen() {
                           </Text>
                         ) : null}
                       </View>
-                    </Card>
-                  </Pressable>
-                </Link>
+                    </Pressable>
+                  </Link>
+                  <View style={styles.recordActions}>
+                    <Link
+                      href={{
+                        pathname: '/mood',
+                        params: { date: entry.date, entryId: entry.id },
+                      }}
+                      asChild>
+                      <Pressable
+                        accessibilityLabel={`${entry.date} 감정 기록 수정`}
+                        accessibilityRole="button"
+                        hitSlop={8}
+                        style={styles.recordActionButton}>
+                        <Text style={styles.recordActionIcon}>✎</Text>
+                      </Pressable>
+                    </Link>
+                    <Pressable
+                      accessibilityLabel={`${entry.date} 감정 기록 삭제`}
+                      accessibilityRole="button"
+                      disabled={deletingEntryId !== null}
+                      hitSlop={8}
+                      onPress={() => confirmDelete(entry.id, entry.date)}
+                      style={styles.recordActionButton}>
+                      <Text style={styles.recordActionIcon}>{'🗑︎'}</Text>
+                    </Pressable>
+                  </View>
+                </Card>
               );
             })
           )}
@@ -221,6 +294,38 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   safeArea: { backgroundColor: theme.colors.background, flex: 1 },
   content: { gap: theme.spacing.xl, padding: theme.spacing.xl, paddingBottom: 110 },
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    flex: 1,
+    justifyContent: 'center',
+    padding: theme.spacing.xl,
+  },
+  confirmDialog: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.xl,
+    gap: theme.spacing.md,
+    maxWidth: 420,
+    padding: theme.spacing.xxl,
+    width: '100%',
+  },
+  confirmTitle: {
+    color: theme.colors.text,
+    fontSize: theme.fontSize.titleMedium,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  confirmDescription: {
+    color: theme.colors.textMuted,
+    fontSize: theme.fontSize.bodySmall,
+    textAlign: 'center',
+  },
+  confirmActions: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
+  },
+  confirmButton: { flex: 1 },
   successBanner: {
     borderRadius: theme.radius.md,
   },
@@ -304,6 +409,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: theme.spacing.md,
+    width: '100%',
+  },
+  recordMain: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    minWidth: 0,
+  },
+  recordActions: {
+    flexDirection: 'row',
+    gap: theme.spacing.xs,
+  },
+  recordActionButton: {
+    alignItems: 'center',
+    backgroundColor: theme.colors.transparent,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  recordActionIcon: {
+    color: theme.colors.text,
+    fontSize: 22,
+    fontWeight: '800',
+    lineHeight: 24,
   },
   recordFace: {
     alignItems: 'center',

@@ -50,27 +50,16 @@ export const useMoodStore = create<MoodStoreState>()((set, get) => {
       }
 
       const previousEntries = get().entries;
-      const existingEntry = previousEntries.find((entry) => entry.date === input.date);
       const now = new Date().toISOString();
       const normalizedNote = input.note?.trim() || undefined;
-      const entry: MoodEntry = existingEntry
-        ? {
-            ...existingEntry,
-            mood: input.mood,
-            activities: input.activities,
-            note: normalizedNote,
-            updatedAt: now,
-          }
-        : {
-            ...input,
-            id: createEntryId(),
-            note: normalizedNote,
-            createdAt: now,
-            updatedAt: now,
-          };
-      const nextEntries = existingEntry
-        ? previousEntries.map((item) => (item.id === existingEntry.id ? entry : item))
-        : [entry, ...previousEntries];
+      const entry: MoodEntry = {
+        ...input,
+        id: createEntryId(),
+        note: normalizedNote,
+        createdAt: now,
+        updatedAt: now,
+      };
+      const nextEntries = [entry, ...previousEntries];
 
       await commitEntries(nextEntries, previousEntries);
       return entry;
@@ -86,13 +75,6 @@ export const useMoodStore = create<MoodStoreState>()((set, get) => {
       const targetDate = input.date ?? existingEntry.date;
       if (!isDateKey(targetDate)) {
         throw new Error('Invalid mood entry date.');
-      }
-
-      const hasDateConflict = previousEntries.some(
-        (entry) => entry.id !== id && entry.date === targetDate,
-      );
-      if (hasDateConflict) {
-        throw new Error('A mood entry already exists for this date.');
       }
 
       const updatedEntry: MoodEntry = {

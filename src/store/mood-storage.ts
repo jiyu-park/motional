@@ -35,17 +35,8 @@ function isMoodEntry(value: unknown): value is MoodEntry {
   return true;
 }
 
-function deduplicateEntries(entries: MoodEntry[]) {
-  const latestEntryByDate = new Map<string, MoodEntry>();
-
-  for (const entry of entries) {
-    const existingEntry = latestEntryByDate.get(entry.date);
-    if (!existingEntry || entry.updatedAt > existingEntry.updatedAt) {
-      latestEntryByDate.set(entry.date, entry);
-    }
-  }
-
-  return [...latestEntryByDate.values()].sort((a, b) =>
+function sortEntries(entries: MoodEntry[]) {
+  return [...entries].sort((a, b) =>
     b.updatedAt.localeCompare(a.updatedAt),
   );
 }
@@ -62,7 +53,7 @@ function parseStoredState(rawValue: string): PersistedMoodState | null {
     return null;
   }
 
-  return { entries: deduplicateEntries(parsed.state.entries) };
+  return { entries: sortEntries(parsed.state.entries) };
 }
 
 async function removeStoredState(name: string) {

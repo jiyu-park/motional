@@ -4,7 +4,6 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -30,11 +29,10 @@ export default function MoodEntryScreen() {
   const isLoading = useMoodStore((state) => state.isLoading);
   const todayKey = useMemo(() => toDateKey(new Date()), []);
   const requestedDate = date && isDateKey(date) ? date : todayKey;
-  const existingEntry = entryId
-    ? entries.find((entry) => entry.id === entryId)
-    : entries.find((entry) => entry.date === requestedDate);
+  const existingEntry = entryId ? entries.find((entry) => entry.id === entryId) : undefined;
   const targetDate = existingEntry?.date ?? requestedDate;
-  const formKey = existingEntry ? `entry:${existingEntry.id}` : `new:${targetDate}`;
+  const isEditing = Boolean(entryId && existingEntry);
+  const formKey = isEditing ? `edit:${existingEntry?.id}` : `new:${targetDate}`;
 
   if (isLoading) {
     return (
@@ -46,26 +44,33 @@ export default function MoodEntryScreen() {
     );
   }
 
-  return <MoodEntryForm key={formKey} existingEntry={existingEntry} targetDate={targetDate} />;
+  return (
+    <MoodEntryForm
+      key={formKey}
+      existingEntry={existingEntry}
+      isEditing={isEditing}
+      targetDate={targetDate}
+    />
+  );
 }
 
 type MoodEntryFormProps = {
   existingEntry?: MoodEntry;
+  isEditing: boolean;
   targetDate: string;
 };
 
-function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
+function MoodEntryForm({ existingEntry, isEditing, targetDate }: MoodEntryFormProps) {
   const router = useRouter();
   const addEntry = useMoodStore((state) => state.addEntry);
   const updateEntry = useMoodStore((state) => state.updateEntry);
-  const deleteEntry = useMoodStore((state) => state.deleteEntry);
   const [selectedMood, setSelectedMood] = useState<MoodType | null>(
-    existingEntry?.mood ?? null,
+    isEditing ? (existingEntry?.mood ?? null) : null,
   );
   const [selectedActivities, setSelectedActivities] = useState<ActivityType[]>(
-    existingEntry ? [...existingEntry.activities] : [],
+    isEditing && existingEntry ? [...existingEntry.activities] : [],
   );
-  const [note, setNote] = useState(existingEntry?.note ?? '');
+  const [note, setNote] = useState(isEditing ? (existingEntry?.note ?? '') : '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
 
@@ -77,18 +82,14 @@ function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
     );
   };
 
-  const moveToCalendar = (result: 'saved' | 'deleted') => {
+  const moveToCalendar = () => {
     router.replace({
       pathname: '/calendar',
-      params: { [result]: '1', selectedDate: targetDate },
+      params: { saved: '1', selectedDate: targetDate },
     });
   };
 
-  const saveEntry = async () => {
-    if (!selectedMood) {
-      Alert.alert('감정을 선택해 주세요', '현재 느끼는 감정 하나를 먼저 선택해 주세요.');
-      return;
-    }
+  const persistEntry = async (mood: MoodType) => {
     if (submittingRef.current) return;
 
     submittingRef.current = true;
@@ -97,7 +98,7 @@ function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
       const input = {
         activities: selectedActivities,
         date: targetDate,
-        mood: selectedMood,
+        mood,
         note,
       };
 
@@ -108,7 +109,7 @@ function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
         await addEntry(input);
       }
 
-      moveToCalendar('saved');
+      moveToCalendar();
     } catch {
       Alert.alert('저장하지 못했어요', '잠시 후 다시 시도해 주세요.');
     } finally {
@@ -117,40 +118,25 @@ function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
     }
   };
 
-  const deleteCurrentEntry = async () => {
-    if (!existingEntry || submittingRef.current) return;
-
-    submittingRef.current = true;
-    setIsSubmitting(true);
-    try {
-      const deleted = await deleteEntry(existingEntry.id);
-      if (!deleted) throw new Error('Mood entry not found.');
-      moveToCalendar('deleted');
-    } catch {
-      Alert.alert('삭제하지 못했어요', '잠시 후 다시 시도해 주세요.');
-    } finally {
-      submittingRef.current = false;
-      setIsSubmitting(false);
+  const saveEntry = () => {
+    if (!selectedMood) {
+      Alert.alert('감정을 선택해 주세요', '현재 느끼는 감정 하나를 먼저 선택해 주세요.');
+      return;
     }
-  };
 
-  const confirmDelete = () => {
-    Alert.alert('기록을 삭제할까요?', '삭제한 감정 기록은 되돌릴 수 없어요.', [
-      { text: '취소', style: 'cancel' },
-      { text: '삭제', style: 'destructive', onPress: () => void deleteCurrentEntry() },
-    ]);
+    void persistEntry(selectedMood);
   };
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-      <Stack.Screen options={{ title: existingEntry ? '감정 기록 수정' : '감정 기록' }} />
+      <Stack.Screen options={{ title: isEditing ? '감정 기록 수정' : '감정 기록' }} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.flex}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.heading}>
             <Text style={styles.title}>
-              {existingEntry ? '이날의 감정을 수정할까요?' : '지금 기분이 어때요?'}
+              {isEditing ? '이날의 감정을 수정할까요?' : '지금 기분이 어때요?'}
             </Text>
             <Text style={styles.description}>
               {targetDate} · 가장 가까운 감정 하나를 골라 주세요
@@ -211,18 +197,9 @@ function MoodEntryForm({ existingEntry, targetDate }: MoodEntryFormProps) {
           )}
           <AppButton
             disabled={!selectedMood || isSubmitting}
-            label={isSubmitting ? '처리 중...' : existingEntry ? '수정 저장' : '감정 저장'}
+            label={isSubmitting ? '처리 중...' : isEditing ? '변경사항 저장' : '감정 저장'}
             onPress={() => void saveEntry()}
           />
-          {existingEntry && (
-            <Pressable
-              accessibilityRole="button"
-              disabled={isSubmitting}
-              onPress={confirmDelete}
-              style={styles.deleteButton}>
-              <Text style={styles.deleteLabel}>기록 삭제</Text>
-            </Pressable>
-          )}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -278,14 +255,5 @@ const styles = StyleSheet.create({
     color: theme.colors.textMuted,
     fontSize: theme.fontSize.labelSmall,
     textAlign: 'center',
-  },
-  deleteButton: {
-    alignItems: 'center',
-    paddingVertical: theme.spacing.sm,
-  },
-  deleteLabel: {
-    color: theme.colors.danger,
-    fontSize: theme.fontSize.bodySmall,
-    fontWeight: '800',
   },
 });
