@@ -12,6 +12,8 @@ export const theme = {
     textMuted: '#6F6768',
     border: '#E6E2D9',
     danger: '#BA1A1A',
+    youtube: '#D93025',
+    youtubeSoft: '#FCE8E6',
     onPrimary: '#FFFFFF',
     successText: '#335F39',
     transparent: 'transparent',

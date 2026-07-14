@@ -41,7 +41,10 @@ export default function TabsLayout() {
         name="calendar"
         options={{ title: '감정 캘린더', tabBarLabel: 'Calendar' }}
       />
-      <Tabs.Screen name="music" options={{ title: '음악', tabBarLabel: 'Music' }} />
+      <Tabs.Screen
+        name="music"
+        options={{ headerShown: false, title: '음악', tabBarLabel: 'Music' }}
+      />
       <Tabs.Screen name="stats" options={{ title: '통계', tabBarLabel: 'Stats' }} />
     </Tabs>
   );
