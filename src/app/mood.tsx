@@ -19,15 +19,9 @@ import { theme } from '@/constants/theme';
 import { activities, moods } from '@/data/moods';
 import { useMoodStore } from '@/store/mood-store';
 import type { ActivityType, MoodType } from '@/types/mood';
+import { toDateKey } from '@/utils/date';
 
 const NOTE_LIMIT = 500;
-
-function toDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 export default function MoodEntryScreen() {
   const router = useRouter();

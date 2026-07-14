@@ -51,3 +51,5 @@ export type MoodEntry = {
 };
 
 export type NewMoodEntry = Pick<MoodEntry, 'date' | 'mood' | 'activities' | 'note'>;
+
+export type UpdateMoodEntry = Partial<NewMoodEntry>;

@@ -1,24 +1,34 @@
 import { Link, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton, Card } from '@/components/ui';
 import { theme } from '@/constants/theme';
 import { activities, moods } from '@/data/moods';
 import { useMoodStore } from '@/store/mood-store';
+import {
+  formatDateTimeLabel,
+  getTimeOfDayEmoji,
+  toDateKey,
+  toDateKeyFromParts,
+} from '@/utils/date';
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+const recordRanges = [
+  { id: 'month', label: '이번 달 기록' },
+  { id: 'today', label: '오늘 기록' },
+] as const;
 
-function toDateKey(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
+type RecordRange = (typeof recordRanges)[number]['id'];
 
 export default function CalendarScreen() {
   const { saved } = useLocalSearchParams<{ saved?: string }>();
   const entries = useMoodStore((state) => state.entries);
-  const hasHydrated = useMoodStore((state) => state.hasHydrated);
+  const isLoading = useMoodStore((state) => state.isLoading);
+  const [recordRange, setRecordRange] = useState<RecordRange>('month');
   const today = new Date();
+  const todayKey = toDateKey(today);
   const year = today.getFullYear();
   const month = today.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -35,6 +45,10 @@ export default function CalendarScreen() {
   const monthEntries = entries.filter((entry) =>
     entry.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`),
   );
+  const visibleEntries =
+    recordRange === 'today'
+      ? monthEntries.filter((entry) => entry.date === todayKey)
+      : monthEntries;
   const calendarCells = [
     ...Array.from({ length: firstWeekDay }, () => null),
     ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
@@ -77,7 +91,7 @@ export default function CalendarScreen() {
             {calendarCells.map((day, index) => {
               if (day === null) return <View key={`empty-${index}`} style={styles.dayCell} />;
 
-              const dateKey = toDateKey(year, month, day);
+              const dateKey = toDateKeyFromParts(year, month, day);
               const entry = latestEntryByDate.get(dateKey);
               const mood = moods.find((item) => item.id === entry?.mood);
               const isToday = day === today.getDate();
@@ -93,16 +107,42 @@ export default function CalendarScreen() {
         </Card>
 
         <View style={styles.recordsSection}>
-          <Text style={styles.sectionTitle}>이번 달 기록</Text>
-          {!hasHydrated ? (
+          <View style={styles.recordTabs}>
+            {recordRanges.map((range) => {
+              const selected = recordRange === range.id;
+              return (
+                <Pressable
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected }}
+                  key={range.id}
+                  onPress={() => setRecordRange(range.id)}
+                  style={[styles.recordTab, selected && styles.recordTabSelected]}>
+                  <Text
+                    style={[
+                      styles.recordTabLabel,
+                      selected && styles.recordTabLabelSelected,
+                    ]}>
+                    {range.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          {isLoading ? (
             <Text style={styles.emptyText}>기록을 불러오는 중이에요.</Text>
-          ) : monthEntries.length === 0 ? (
+          ) : visibleEntries.length === 0 ? (
             <Card padding="xlarge" style={styles.emptyCard} variant="muted">
-              <Text style={styles.emptyTitle}>아직 기록이 없어요</Text>
-              <Text style={styles.emptyText}>첫 감정을 기록하면 이곳에서 확인할 수 있어요.</Text>
+              <Text style={styles.emptyTitle}>
+                {recordRange === 'today' ? '오늘 기록이 없어요' : '아직 기록이 없어요'}
+              </Text>
+              <Text style={styles.emptyText}>
+                {recordRange === 'today'
+                  ? '오늘의 첫 감정을 기록해 보세요.'
+                  : '첫 감정을 기록하면 이곳에서 확인할 수 있어요.'}
+              </Text>
             </Card>
           ) : (
-            monthEntries.map((entry) => {
+            visibleEntries.map((entry) => {
               const mood = moods.find((item) => item.id === entry.mood);
               const activityLabels = entry.activities
                 .map((id) => activities.find((activity) => activity.id === id)?.label)
@@ -116,7 +156,8 @@ export default function CalendarScreen() {
                   </View>
                   <View style={styles.recordContent}>
                     <Text style={styles.recordTitle}>
-                      {mood?.label ?? entry.mood} · {entry.date}
+                      {mood?.label ?? entry.mood} · {getTimeOfDayEmoji(entry.createdAt)}{' '}
+                      {formatDateTimeLabel(entry.date, entry.createdAt)}
                     </Text>
                     {activityLabels ? (
                       <Text style={styles.recordMeta}>{activityLabels}</Text>
@@ -190,7 +231,26 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xxs,
   },
   recordsSection: { gap: theme.spacing.md },
-  sectionTitle: { color: theme.colors.text, fontSize: theme.fontSize.title, fontWeight: '800' },
+  recordTabs: {
+    backgroundColor: theme.colors.surfaceMuted,
+    borderRadius: theme.radius.pill,
+    flexDirection: 'row',
+    padding: theme.spacing.xs,
+  },
+  recordTab: {
+    alignItems: 'center',
+    borderRadius: theme.radius.pill,
+    flex: 1,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.md,
+  },
+  recordTabSelected: { backgroundColor: theme.colors.primary },
+  recordTabLabel: {
+    color: theme.colors.textMuted,
+    fontSize: theme.fontSize.bodySmall,
+    fontWeight: '800',
+  },
+  recordTabLabelSelected: { color: theme.colors.onPrimary },
   emptyCard: {
     alignItems: 'center',
     gap: theme.spacing.sm,
