@@ -1,6 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { PersistStorage, StorageValue } from 'zustand/middleware';
-
 import { activities, moods } from '@/data/moods';
 import type { MoodEntry } from '@/types/mood';
 import { isDateKey, isIsoDateTime } from '@/utils/date';
@@ -37,7 +35,22 @@ function isMoodEntry(value: unknown): value is MoodEntry {
   return true;
 }
 
-function parseStoredState(rawValue: string): StorageValue<PersistedMoodState> | null {
+function deduplicateEntries(entries: MoodEntry[]) {
+  const latestEntryByDate = new Map<string, MoodEntry>();
+
+  for (const entry of entries) {
+    const existingEntry = latestEntryByDate.get(entry.date);
+    if (!existingEntry || entry.updatedAt > existingEntry.updatedAt) {
+      latestEntryByDate.set(entry.date, entry);
+    }
+  }
+
+  return [...latestEntryByDate.values()].sort((a, b) =>
+    b.updatedAt.localeCompare(a.updatedAt),
+  );
+}
+
+function parseStoredState(rawValue: string): PersistedMoodState | null {
   const parsed: unknown = JSON.parse(rawValue);
   if (!isRecord(parsed) || !isRecord(parsed.state)) return null;
   if (!Array.isArray(parsed.state.entries)) return null;
@@ -49,10 +62,7 @@ function parseStoredState(rawValue: string): StorageValue<PersistedMoodState> | 
     return null;
   }
 
-  return {
-    state: { entries: parsed.state.entries },
-    version: parsed.version === MOOD_STORAGE_VERSION ? parsed.version : undefined,
-  };
+  return { entries: deduplicateEntries(parsed.state.entries) };
 }
 
 async function removeStoredState(name: string) {
@@ -63,28 +73,28 @@ async function removeStoredState(name: string) {
   }
 }
 
-export const moodPersistStorage: PersistStorage<PersistedMoodState> = {
-  getItem: async (name) => {
-    try {
-      const rawValue = await AsyncStorage.getItem(name);
-      if (rawValue === null) return null;
+export async function loadMoodEntries() {
+  try {
+    const rawValue = await AsyncStorage.getItem(MOOD_STORAGE_KEY);
+    if (rawValue === null) return [];
 
-      const storedState = parseStoredState(rawValue);
-      if (storedState) return storedState;
+    const storedState = parseStoredState(rawValue);
+    if (storedState) return storedState.entries;
 
-      await removeStoredState(name);
-      return null;
-    } catch {
-      await removeStoredState(name);
-      return null;
-    }
-  },
-  setItem: async (name, value) => {
-    try {
-      await AsyncStorage.setItem(name, JSON.stringify(value));
-    } catch {
-      // Keep the in-memory store usable when local persistence is unavailable.
-    }
-  },
-  removeItem: removeStoredState,
-};
+    await removeStoredState(MOOD_STORAGE_KEY);
+    return [];
+  } catch {
+    await removeStoredState(MOOD_STORAGE_KEY);
+    return [];
+  }
+}
+
+export async function saveMoodEntries(entries: MoodEntry[]) {
+  await AsyncStorage.setItem(
+    MOOD_STORAGE_KEY,
+    JSON.stringify({
+      state: { entries },
+      version: MOOD_STORAGE_VERSION,
+    }),
+  );
+}

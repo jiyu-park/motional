@@ -10,6 +10,7 @@ import { useMoodStore } from '@/store/mood-store';
 import {
   formatDateTimeLabel,
   getTimeOfDayEmoji,
+  isDateKey,
   toDateKey,
   toDateKeyFromParts,
 } from '@/utils/date';
@@ -23,14 +24,20 @@ const recordRanges = [
 type RecordRange = (typeof recordRanges)[number]['id'];
 
 export default function CalendarScreen() {
-  const { saved } = useLocalSearchParams<{ saved?: string }>();
+  const { deleted, saved, selectedDate } = useLocalSearchParams<{
+    deleted?: string;
+    saved?: string;
+    selectedDate?: string;
+  }>();
   const entries = useMoodStore((state) => state.entries);
   const isLoading = useMoodStore((state) => state.isLoading);
   const [recordRange, setRecordRange] = useState<RecordRange>('month');
   const today = new Date();
   const todayKey = toDateKey(today);
-  const year = today.getFullYear();
-  const month = today.getMonth();
+  const activeSelectedDate = selectedDate && isDateKey(selectedDate) ? selectedDate : undefined;
+  const selectedDateParts = activeSelectedDate?.split('-').map(Number);
+  const year = selectedDateParts?.[0] ?? today.getFullYear();
+  const month = selectedDateParts ? selectedDateParts[1] - 1 : today.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstWeekDay = new Date(year, month, 1).getDay();
 
@@ -57,6 +64,16 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
+        {deleted === '1' && (
+          <Card
+            accessibilityRole="alert"
+            padding="medium"
+            style={styles.successBanner}
+            variant="highlight">
+            <Text style={styles.successText}>감정 기록이 삭제되었어요.</Text>
+          </Card>
+        )}
+
         {saved === '1' && (
           <Card
             accessibilityRole="alert"
@@ -74,7 +91,7 @@ export default function CalendarScreen() {
             </Text>
             <Text style={styles.monthSummary}>{monthEntries.length}개의 감정 기록</Text>
           </View>
-          <Link href="/mood" asChild>
+          <Link href={{ pathname: '/mood', params: { date: todayKey } }} asChild>
             <AppButton accessibilityLabel="새 감정 기록" label="＋ 기록" size="small" />
           </Link>
         </View>
@@ -94,13 +111,25 @@ export default function CalendarScreen() {
               const dateKey = toDateKeyFromParts(year, month, day);
               const entry = latestEntryByDate.get(dateKey);
               const mood = moods.find((item) => item.id === entry?.mood);
-              const isToday = day === today.getDate();
+              const isToday = dateKey === todayKey;
+              const isSelected = dateKey === activeSelectedDate;
 
               return (
-                <View key={dateKey} style={[styles.dayCell, isToday && styles.todayCell]}>
-                  <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>{day}</Text>
-                  {mood && <Text style={styles.dayMood}>{mood.emoji}</Text>}
-                </View>
+                <Link
+                  key={dateKey}
+                  href={{ pathname: '/mood', params: { date: dateKey } }}
+                  asChild>
+                  <Pressable
+                    accessibilityLabel={`${dateKey} 감정 기록`}
+                    style={[
+                      styles.dayCell,
+                      isToday && styles.todayCell,
+                      isSelected && styles.selectedDayCell,
+                    ]}>
+                    <Text style={[styles.dayNumber, isToday && styles.todayNumber]}>{day}</Text>
+                    {mood && <Text style={styles.dayMood}>{mood.emoji}</Text>}
+                  </Pressable>
+                </Link>
               );
             })}
           </View>
@@ -150,25 +179,36 @@ export default function CalendarScreen() {
                 .join(', ');
 
               return (
-                <Card key={entry.id} padding="medium" style={styles.recordCard}>
-                  <View style={[styles.recordFace, { backgroundColor: mood?.color ?? theme.colors.surfaceMuted }]}>
-                    <Text style={styles.recordEmoji}>{mood?.emoji ?? '·_·'}</Text>
-                  </View>
-                  <View style={styles.recordContent}>
-                    <Text style={styles.recordTitle}>
-                      {mood?.label ?? entry.mood} · {getTimeOfDayEmoji(entry.createdAt)}{' '}
-                      {formatDateTimeLabel(entry.date, entry.createdAt)}
-                    </Text>
-                    {activityLabels ? (
-                      <Text style={styles.recordMeta}>{activityLabels}</Text>
-                    ) : null}
-                    {entry.note?.trim() ? (
-                      <Text numberOfLines={2} style={styles.recordNote}>
-                        {entry.note}
-                      </Text>
-                    ) : null}
-                  </View>
-                </Card>
+                <Link
+                  key={entry.id}
+                  href={{ pathname: '/mood', params: { date: entry.date, entryId: entry.id } }}
+                  asChild>
+                  <Pressable accessibilityLabel={`${entry.date} 감정 기록 수정`}>
+                    <Card padding="medium" style={styles.recordCard}>
+                      <View
+                        style={[
+                          styles.recordFace,
+                          { backgroundColor: mood?.color ?? theme.colors.surfaceMuted },
+                        ]}>
+                        <Text style={styles.recordEmoji}>{mood?.emoji ?? '·_·'}</Text>
+                      </View>
+                      <View style={styles.recordContent}>
+                        <Text style={styles.recordTitle}>
+                          {mood?.label ?? entry.mood} · {getTimeOfDayEmoji(entry.createdAt)}{' '}
+                          {formatDateTimeLabel(entry.date, entry.createdAt)}
+                        </Text>
+                        {activityLabels ? (
+                          <Text style={styles.recordMeta}>{activityLabels}</Text>
+                        ) : null}
+                        {entry.note?.trim() ? (
+                          <Text numberOfLines={2} style={styles.recordNote}>
+                            {entry.note}
+                          </Text>
+                        ) : null}
+                      </View>
+                    </Card>
+                  </Pressable>
+                </Link>
               );
             })
           )}
@@ -212,12 +252,15 @@ const styles = StyleSheet.create({
   calendarGrid: { flexDirection: 'row', flexWrap: 'wrap' },
   dayCell: {
     alignItems: 'center',
+    borderColor: 'transparent',
     borderRadius: theme.radius.md,
+    borderWidth: 2,
     height: 58,
     justifyContent: 'center',
     width: '14.2857%',
   },
   todayCell: { backgroundColor: theme.colors.primarySoft },
+  selectedDayCell: { borderColor: theme.colors.primary },
   dayNumber: {
     color: theme.colors.textMuted,
     fontSize: theme.fontSize.labelSmall,

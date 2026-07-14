@@ -1,11 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
-import {
-  MOOD_STORAGE_KEY,
-  moodPersistStorage,
-  type PersistedMoodState,
-} from '@/store/mood-storage';
+import { loadMoodEntries, saveMoodEntries } from '@/store/mood-storage';
 import type { MoodEntry, NewMoodEntry, UpdateMoodEntry } from '@/types/mood';
 import { isDateKey } from '@/utils/date';
 
@@ -13,10 +8,10 @@ export interface MoodStoreActions {
   getAllEntries: () => MoodEntry[];
   getEntriesByDate: (date: string) => MoodEntry[];
   getEntryById: (id: string) => MoodEntry | undefined;
-  addEntry: (input: NewMoodEntry) => MoodEntry;
-  updateEntry: (id: string, input: UpdateMoodEntry) => MoodEntry | undefined;
-  deleteEntry: (id: string) => boolean;
-  finishHydration: () => void;
+  addEntry: (input: NewMoodEntry) => Promise<MoodEntry>;
+  updateEntry: (id: string, input: UpdateMoodEntry) => Promise<MoodEntry | undefined>;
+  deleteEntry: (id: string) => Promise<boolean>;
+  hydrateEntries: () => Promise<void>;
 }
 
 export interface MoodStoreState extends MoodStoreActions {
@@ -26,77 +21,114 @@ export interface MoodStoreState extends MoodStoreActions {
 }
 
 function createEntryId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  return `mood-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export const useMoodStore = create<MoodStoreState>()(
-  persist(
-    (set, get) => ({
-      entries: [],
-      hasHydrated: false,
-      isLoading: true,
-      getAllEntries: () => [...get().entries],
-      getEntriesByDate: (date) => {
-        if (!isDateKey(date)) return [];
-        return get().entries.filter((entry) => entry.date === date);
-      },
-      getEntryById: (id) => get().entries.find((entry) => entry.id === id),
-      addEntry: (input) => {
-        if (!isDateKey(input.date)) {
-          throw new Error('Mood entry date must use the YYYY-MM-DD format.');
-        }
+export const useMoodStore = create<MoodStoreState>()((set, get) => {
+  const commitEntries = async (nextEntries: MoodEntry[], previousEntries: MoodEntry[]) => {
+    set({ entries: nextEntries });
 
-        const now = new Date().toISOString();
-        const entry: MoodEntry = {
-          ...input,
-          id: createEntryId(),
-          note: input.note?.trim() || undefined,
-          createdAt: now,
-          updatedAt: now,
-        };
-        set((state) => ({ entries: [entry, ...state.entries] }));
-        return entry;
-      },
-      updateEntry: (id, input) => {
-        const existingEntry = get().entries.find((entry) => entry.id === id);
-        if (!existingEntry) return undefined;
-        if (input.date !== undefined && !isDateKey(input.date)) return undefined;
+    try {
+      await saveMoodEntries(nextEntries);
+    } catch (error) {
+      set({ entries: previousEntries });
+      throw error;
+    }
+  };
 
-        const updatedEntry: MoodEntry = {
-          ...existingEntry,
-          activities: input.activities ?? existingEntry.activities,
-          date: input.date ?? existingEntry.date,
-          mood: input.mood ?? existingEntry.mood,
-          note:
-            input.note === undefined
-              ? existingEntry.note
-              : input.note.trim() || undefined,
-          updatedAt: new Date().toISOString(),
-        };
+  return {
+    entries: [],
+    hasHydrated: false,
+    isLoading: true,
+    getAllEntries: () => get().entries,
+    getEntriesByDate: (date) =>
+      isDateKey(date) ? get().entries.filter((entry) => entry.date === date) : [],
+    getEntryById: (id) => get().entries.find((entry) => entry.id === id),
+    addEntry: async (input) => {
+      if (!isDateKey(input.date)) {
+        throw new Error('Invalid mood entry date.');
+      }
 
-        set((state) => ({
-          entries: state.entries.map((entry) =>
-            entry.id === id ? updatedEntry : entry,
-          ),
-        }));
-        return updatedEntry;
-      },
-      deleteEntry: (id) => {
-        const entryExists = get().entries.some((entry) => entry.id === id);
-        if (!entryExists) return false;
+      const previousEntries = get().entries;
+      const existingEntry = previousEntries.find((entry) => entry.date === input.date);
+      const now = new Date().toISOString();
+      const normalizedNote = input.note?.trim() || undefined;
+      const entry: MoodEntry = existingEntry
+        ? {
+            ...existingEntry,
+            mood: input.mood,
+            activities: input.activities,
+            note: normalizedNote,
+            updatedAt: now,
+          }
+        : {
+            ...input,
+            id: createEntryId(),
+            note: normalizedNote,
+            createdAt: now,
+            updatedAt: now,
+          };
+      const nextEntries = existingEntry
+        ? previousEntries.map((item) => (item.id === existingEntry.id ? entry : item))
+        : [entry, ...previousEntries];
 
-        set((state) => ({
-          entries: state.entries.filter((entry) => entry.id !== id),
-        }));
-        return true;
-      },
-      finishHydration: () => set({ hasHydrated: true, isLoading: false }),
-    }),
-    {
-      name: MOOD_STORAGE_KEY,
-      storage: moodPersistStorage,
-      partialize: (state): PersistedMoodState => ({ entries: state.entries }),
-      onRehydrateStorage: () => (state) => state?.finishHydration(),
+      await commitEntries(nextEntries, previousEntries);
+      return entry;
     },
-  ),
-);
+    updateEntry: async (id, input) => {
+      const previousEntries = get().entries;
+      const existingEntry = previousEntries.find((entry) => entry.id === id);
+
+      if (!existingEntry) {
+        return undefined;
+      }
+
+      const targetDate = input.date ?? existingEntry.date;
+      if (!isDateKey(targetDate)) {
+        throw new Error('Invalid mood entry date.');
+      }
+
+      const hasDateConflict = previousEntries.some(
+        (entry) => entry.id !== id && entry.date === targetDate,
+      );
+      if (hasDateConflict) {
+        throw new Error('A mood entry already exists for this date.');
+      }
+
+      const updatedEntry: MoodEntry = {
+        ...existingEntry,
+        ...input,
+        date: targetDate,
+        activities: input.activities ?? existingEntry.activities,
+        note:
+          input.note === undefined ? existingEntry.note : input.note.trim() || undefined,
+        createdAt: existingEntry.createdAt,
+        updatedAt: new Date().toISOString(),
+      };
+      const nextEntries = previousEntries.map((entry) =>
+        entry.id === id ? updatedEntry : entry,
+      );
+
+      await commitEntries(nextEntries, previousEntries);
+      return updatedEntry;
+    },
+    deleteEntry: async (id) => {
+      const previousEntries = get().entries;
+      const nextEntries = previousEntries.filter((entry) => entry.id !== id);
+
+      if (nextEntries.length === previousEntries.length) {
+        return false;
+      }
+
+      await commitEntries(nextEntries, previousEntries);
+      return true;
+    },
+    hydrateEntries: async () => {
+      set({ isLoading: true });
+      const entries = await loadMoodEntries();
+      set({ entries, hasHydrated: true, isLoading: false });
+    },
+  };
+});
+
+void useMoodStore.getState().hydrateEntries();
