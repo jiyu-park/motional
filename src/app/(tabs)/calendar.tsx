@@ -1,8 +1,9 @@
 import { Link, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppButton, Card } from '@/components/ui';
 import { theme } from '@/constants/theme';
 import { activities, moods } from '@/data/moods';
 import { useMoodStore } from '@/store/mood-store';
@@ -43,9 +44,13 @@ export default function CalendarScreen() {
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
         {saved === '1' && (
-          <View accessibilityRole="alert" style={styles.successBanner}>
+          <Card
+            accessibilityRole="alert"
+            padding="medium"
+            style={styles.successBanner}
+            variant="highlight">
             <Text style={styles.successText}>감정이 저장되었어요. 캘린더에 반영했습니다.</Text>
-          </View>
+          </Card>
         )}
 
         <View style={styles.monthHeader}>
@@ -56,13 +61,11 @@ export default function CalendarScreen() {
             <Text style={styles.monthSummary}>{monthEntries.length}개의 감정 기록</Text>
           </View>
           <Link href="/mood" asChild>
-            <Pressable accessibilityLabel="새 감정 기록" style={styles.addButton}>
-              <Text style={styles.addButtonText}>＋ 기록</Text>
-            </Pressable>
+            <AppButton accessibilityLabel="새 감정 기록" label="＋ 기록" size="small" />
           </Link>
         </View>
 
-        <View style={styles.calendarCard}>
+        <Card padding="small" style={styles.calendarCard}>
           <View style={styles.weekRow}>
             {weekDays.map((day) => (
               <Text key={day} style={styles.weekDay}>
@@ -87,17 +90,17 @@ export default function CalendarScreen() {
               );
             })}
           </View>
-        </View>
+        </Card>
 
         <View style={styles.recordsSection}>
           <Text style={styles.sectionTitle}>이번 달 기록</Text>
           {!hasHydrated ? (
             <Text style={styles.emptyText}>기록을 불러오는 중이에요.</Text>
           ) : monthEntries.length === 0 ? (
-            <View style={styles.emptyCard}>
+            <Card padding="xlarge" style={styles.emptyCard} variant="muted">
               <Text style={styles.emptyTitle}>아직 기록이 없어요</Text>
               <Text style={styles.emptyText}>첫 감정을 기록하면 이곳에서 확인할 수 있어요.</Text>
-            </View>
+            </Card>
           ) : (
             monthEntries.map((entry) => {
               const mood = moods.find((item) => item.id === entry.mood);
@@ -107,7 +110,7 @@ export default function CalendarScreen() {
                 .join(', ');
 
               return (
-                <View key={entry.id} style={styles.recordCard}>
+                <Card key={entry.id} padding="medium" style={styles.recordCard}>
                   <View style={[styles.recordFace, { backgroundColor: mood?.color ?? theme.colors.surfaceMuted }]}>
                     <Text style={styles.recordEmoji}>{mood?.emoji ?? '·_·'}</Text>
                   </View>
@@ -124,7 +127,7 @@ export default function CalendarScreen() {
                       </Text>
                     ) : null}
                   </View>
-                </View>
+                </Card>
               );
             })
           )}
@@ -138,9 +141,7 @@ const styles = StyleSheet.create({
   safeArea: { backgroundColor: theme.colors.background, flex: 1 },
   content: { gap: theme.spacing.xl, padding: theme.spacing.xl, paddingBottom: 110 },
   successBanner: {
-    backgroundColor: theme.colors.tertiarySoft,
     borderRadius: theme.radius.md,
-    padding: theme.spacing.md,
   },
   successText: {
     color: theme.colors.successText,
@@ -155,24 +156,8 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.label,
     marginTop: theme.spacing.xs,
   },
-  addButton: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.radius.pill,
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-  },
-  addButtonText: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.bodySmall,
-    fontWeight: '800',
-  },
   calendarCard: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-    borderRadius: theme.radius.lg,
-    borderWidth: 1,
     overflow: 'hidden',
-    padding: theme.spacing.sm,
   },
   weekRow: { flexDirection: 'row' },
   weekDay: {
@@ -208,22 +193,14 @@ const styles = StyleSheet.create({
   sectionTitle: { color: theme.colors.text, fontSize: theme.fontSize.title, fontWeight: '800' },
   emptyCard: {
     alignItems: 'center',
-    backgroundColor: theme.colors.surfaceMuted,
-    borderRadius: theme.radius.lg,
     gap: theme.spacing.sm,
-    padding: theme.spacing.xxl,
   },
   emptyTitle: { color: theme.colors.text, fontSize: theme.fontSize.subtitle, fontWeight: '800' },
   emptyText: { color: theme.colors.textMuted, fontSize: theme.fontSize.bodySmall, textAlign: 'center' },
   recordCard: {
     alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-    borderRadius: theme.radius.lg,
-    borderWidth: 1,
     flexDirection: 'row',
     gap: theme.spacing.md,
-    padding: theme.spacing.md,
   },
   recordFace: {
     alignItems: 'center',

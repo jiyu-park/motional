@@ -4,7 +4,6 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,9 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ActivityChip } from '@/components/activity-chip';
 import { MoodOption } from '@/components/mood-option';
+import { AppButton } from '@/components/ui';
 import { theme } from '@/constants/theme';
 import { activities, moods } from '@/data/moods';
 import { useMoodStore } from '@/store/mood-store';
+import type { ActivityType, MoodType } from '@/types/mood';
 
 const NOTE_LIMIT = 500;
 
@@ -31,11 +32,11 @@ function toDateKey(date: Date) {
 export default function MoodEntryScreen() {
   const router = useRouter();
   const addEntry = useMoodStore((state) => state.addEntry);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const [selectedMood, setSelectedMood] = useState<MoodType | null>(null);
+  const [selectedActivities, setSelectedActivities] = useState<ActivityType[]>([]);
   const [note, setNote] = useState('');
 
-  const toggleActivity = (activityId: string) => {
+  const toggleActivity = (activityId: ActivityType) => {
     setSelectedActivities((current) =>
       current.includes(activityId)
         ? current.filter((id) => id !== activityId)
@@ -122,14 +123,11 @@ export default function MoodEntryScreen() {
 
         <View style={styles.footer}>
           {!selectedMood && <Text style={styles.validation}>감정을 선택하면 저장할 수 있어요.</Text>}
-          <Pressable
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !selectedMood }}
+          <AppButton
             disabled={!selectedMood}
+            label="감정 저장"
             onPress={saveEntry}
-            style={[styles.saveButton, !selectedMood && styles.saveButtonDisabled]}>
-            <Text style={styles.saveButtonText}>감정 저장</Text>
-          </Pressable>
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -180,17 +178,5 @@ const styles = StyleSheet.create({
     color: theme.colors.textMuted,
     fontSize: theme.fontSize.labelSmall,
     textAlign: 'center',
-  },
-  saveButton: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.radius.pill,
-    paddingVertical: theme.spacing.lg,
-  },
-  saveButtonDisabled: { opacity: 0.35 },
-  saveButtonText: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.button,
-    fontWeight: '800',
   },
 });

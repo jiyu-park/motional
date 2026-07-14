@@ -1,10 +1,11 @@
 import { Link } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppButton, Card } from '@/components/ui';
+import { theme } from '@/constants/theme';
 import { moods } from '@/data/moods';
 import { useMoodStore } from '@/store/mood-store';
-import { theme } from '@/constants/theme';
 
 export default function HomeScreen() {
   const latestEntry = useMoodStore((state) => state.entries[0]);
@@ -14,7 +15,7 @@ export default function HomeScreen() {
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.eyebrow}>오늘의 감정</Text>
-        <View style={styles.heroCard}>
+        <Card padding="xlarge" style={styles.heroCard}>
           {latestMood ? (
             <>
               <Text style={styles.moodEmoji}>{latestMood.emoji}</Text>
@@ -29,20 +30,19 @@ export default function HomeScreen() {
             </>
           )}
           <Link href="/mood" asChild>
-            <Pressable style={styles.primaryButton}>
-              <Text style={styles.primaryButtonText}>
-                {latestMood ? '한 번 더 기록' : '감정 기록하기'}
-              </Text>
-            </Pressable>
+            <AppButton
+              label={latestMood ? '한 번 더 기록' : '감정 기록하기'}
+              style={styles.primaryButton}
+            />
           </Link>
-        </View>
+        </Card>
 
-        <View style={styles.infoCard}>
+        <Card variant="highlight" style={styles.infoCard}>
           <Text style={styles.cardTitle}>기록은 내 기기에 저장돼요</Text>
           <Text style={styles.description}>
             감정과 활동, 메모를 남기면 Calendar에서 바로 확인할 수 있어요.
           </Text>
-        </View>
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );
@@ -54,12 +54,8 @@ const styles = StyleSheet.create({
   eyebrow: { color: theme.colors.textMuted, fontSize: theme.fontSize.bodySmall, fontWeight: '700' },
   heroCard: {
     alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
     borderRadius: theme.radius.xl,
-    borderWidth: 1,
     gap: theme.spacing.sm,
-    padding: theme.spacing.xxl,
   },
   moodEmoji: { fontSize: theme.fontSize.mood },
   heroTitle: { color: theme.colors.text, fontSize: theme.fontSize.titleLarge, fontWeight: '800' },
@@ -70,22 +66,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.radius.pill,
     marginTop: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xxl,
-    paddingVertical: theme.spacing.lg,
-  },
-  primaryButtonText: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.button,
-    fontWeight: '800',
   },
   infoCard: {
-    backgroundColor: theme.colors.tertiarySoft,
-    borderRadius: theme.radius.lg,
     gap: theme.spacing.sm,
-    padding: theme.spacing.xl,
   },
   cardTitle: { color: theme.colors.text, fontSize: theme.fontSize.titleSmall, fontWeight: '800' },
 });

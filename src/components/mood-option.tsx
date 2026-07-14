@@ -1,10 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { theme } from '@/constants/theme';
-import type { MoodOption as MoodOptionType } from '@/data/moods';
+import type { Mood } from '@/types/mood';
 
 type Props = {
-  mood: MoodOptionType;
+  mood: Mood;
   selected: boolean;
   onPress: () => void;
 };

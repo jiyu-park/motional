@@ -1,13 +1,7 @@
 import { theme } from '@/constants/theme';
+import type { Activity, Mood } from '@/types/mood';
 
-export type MoodOption = {
-  id: string;
-  label: string;
-  emoji: string;
-  color: string;
-};
-
-export const moods: MoodOption[] = [
+export const moods: readonly Mood[] = [
   { id: 'happy', label: '행복', emoji: '>ᴗ<', color: theme.colors.mood.happy },
   { id: 'flutter', label: '설렘', emoji: '>_<', color: theme.colors.mood.flutter },
   { id: 'pleasure', label: '즐거움', emoji: '^‿^', color: theme.colors.mood.pleasure },
@@ -25,7 +19,7 @@ export const moods: MoodOption[] = [
   { id: 'excited', label: '신남', emoji: '✧∀✧', color: theme.colors.mood.excited },
 ];
 
-export const activities = [
+export const activities: readonly Activity[] = [
   { id: 'exercise', label: '운동', emoji: '🏃' },
   { id: 'work', label: '업무', emoji: '💼' },
   { id: 'study', label: '공부', emoji: '✏️' },
@@ -36,4 +30,4 @@ export const activities = [
   { id: 'creative', label: '창작', emoji: '🎨' },
   { id: 'social', label: '사교', emoji: '💬' },
   { id: 'other', label: '기타', emoji: '＋' },
-] as const;
+];
