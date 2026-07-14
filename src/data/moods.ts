@@ -1,5 +1,5 @@
 import { theme } from '@/constants/theme';
-import type { Activity, Mood } from '@/types/mood';
+import type { Activity, ActivityType, Mood, MoodType } from '@/types/mood';
 
 export const moods: readonly Mood[] = [
   { id: 'happy', label: '행복', emoji: '>ᴗ<', color: theme.colors.mood.happy },
@@ -31,3 +31,11 @@ export const activities: readonly Activity[] = [
   { id: 'social', label: '사교', emoji: '💬' },
   { id: 'other', label: '기타', emoji: '＋' },
 ];
+
+export const moodById = Object.fromEntries(
+  moods.map((mood) => [mood.id, mood]),
+) as Readonly<Record<MoodType, Mood>>;
+
+export const activityById = Object.fromEntries(
+  activities.map((activity) => [activity.id, activity]),
+) as Readonly<Record<ActivityType, Activity>>;
